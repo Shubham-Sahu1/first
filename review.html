@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Automation - SD Media & Grow Up with Shubham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="90" cy="20" r="1.5" fill="%23ffffff" opacity="0.1"><animate attributeName="opacity" values="0.1;0.4;0.1" dur="4s" repeatCount="indefinite"/></circle><circle cx="20" cy="90" r="1" fill="%23ffffff" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="5s" repeatCount="indefinite"/></circle></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .business-logo, .personal-logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 3px solid #fff;
+        }
+
+        .business-logo:hover, .personal-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .vs-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .instructions {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+
+        .review-template {
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-template::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .review-template:hover::before {
+            left: 100%;
+        }
+
+        .review-template:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+            background: linear-gradient(135deg, #fff 0%, #f8faff 100%);
+        }
+
+        .review-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .review-icon {
+            font-size: 24px;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .review-text {
+            color: #333;
+            font-size: 15px;
+            line-height: 1.6;
+            flex-grow: 1;
+            font-weight: 400;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            min-width: 120px;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .copy-message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            border-radius: 14px;
+        }
+
+        .copy-message.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-review-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .custom-review-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .custom-review-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #20c997, #28a745);
+        }
+
+        .custom-review-text {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .logo-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .vs-text {
+                order: -1;
+                transform: rotate(90deg);
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .review-template {
+                padding: 18px;
+            }
+            
+            .review-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+            
+            .copy-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Grow Up with Shubham</h1>
+            <div class="logo-section">
+                <img src="./Grow Up (1).png" alt="Shubham" class="business-logo">
+                <span class="vs-text">×</span>
+                <img src="./Grow Up.png" alt="Grow Up with Shubham" class="personal-logo">
+            </div>
+
+            <h1><i class="fas fa-star"></i> Your Feedback Matters - Help Jha Institute Grow! <i class="fas fa-rocket"></i></h1>
+            <p class="instructions">
+                Pick a review that reflects your experience. Click "Copy" and you’ll be taken to the Google Review page. Paste it and you're done!
+                <strong>Your honest feedback helps us serve you better.</strong>
+            </p>
+        </div>
+        
+        <div id="review-container"></div>
+
+        <div class="custom-review-section">
+            <p class="custom-review-text">
+                <i class="fas fa-edit"></i> Prefer to write your own review? We'd love to hear your unique experience!
+            </p>
+            <a href="#" id="custom-review-btn" class="custom-review-btn">
+                <i class="fas fa-pen-fancy"></i>
+                Write Custom Review
+            </a>
+        </div>
+
+        <div class="footer">
+            <p><i class="fas fa-shield-alt"></i> Powered by Grow Up with Shubham | Your feedback is valuable and secure</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const googleReviewUrl = 'https://www.google.com/search?sca_esv=544fa928dd795f48&sxsrf=AE3TifM2woULn8xk-X0juwgpK1pNjKYX-A:1758302912921&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E5dpqP5BKb32SoQVrhfSKh61Gq9fIcpgbyVrxKmPQpEML6yays8rN54AEDf8epTBXD-mOyNZJ9zM6pGqpcdVCt-OH06ArOhAar1WdBzkfXK5w8CU9ypsP2YfY674jfv-J62G7fw%3D&q=Jha+Institute+-+Speak+English+by+Meditation+Reviews&sa=X&ved=2ahUKEwio3aDkrOWPAxXRdfUHHTt0GvIQ0bkNegQIMBAE&biw=1536&bih=826&dpr=1.25#lrd=0x3a28dd8062100171:0x2853bcb0933e49ff,3,,,,';
+        const numberOfReviewsToShow = 5;
+
+        // Enhanced spintax templates with more variety
+        const spintaxTemplates = [
+            
+    "Our {spoken English skills|communication abilities|fluency in English} has {skyrocketed|dramatically improved|grown immensely} thanks to Jha Institute Raipur. Their {meditation-based learning|practical training sessions|interactive spoken English classes} are {highly effective|designed for real growth|well-structured}. The {supportive staff|dedicated trainers|helpful faculty} is {always encouraging|professional and approachable|committed to student success}. {Highly recommended for English learners in Raipur!|The best English institute near Pachpedi Naka.|A++ spoken English coaching center!}",
+
+    "{I'm so impressed with|Very happy with|Absolutely love} the {results from the spoken English program|training at Jha Institute|way they teach}. They’ve {boosted my confidence|helped me overcome stage fear|transformed my communication skills}. The {staff is supportive|mentors are highly skilled|teachers are very understanding}. {Best place for personality development in Raipur!|Highly recommended for students and professionals.|Ideal coaching for public speaking too!}",
+
+    "The {spoken English course|personality development classes|training program} at Jha Institute Raipur is {fantastic|amazing|perfect for beginners}. It's {interactive and confidence-building|well-designed for practical learners|focused on real-life conversations}. Their {location is convenient|center is easy to reach|institute is centrally located}, and the {staff is friendly|mentors are helpful|team is professional}. {You’ll love the positive environment.|Highly suitable for Raipur students.|Top choice for English coaching.}",
+
+    "{Thanks to Jha Institute|After joining Jha Institute|Since attending Jha Institute}, I’ve {overcome my stage fear|become confident in English|started speaking fluently}. Their {voice modulation sessions|public speaking training|confidence-building activities} are {truly effective|very motivating|a game-changer}. {Great for students in Raipur!|Learn English the smart way.|Perfect place to improve fast.}",
+
+    "{Jha Institute Raipur|This spoken English center in Raipur|Jha Institute near Pachpedi Naka} has {changed my life|transformed my speaking skills|boosted my confidence}. Their {unique meditation technique|practical approach to PD|focus on real speaking} is {unmatched|rare to find|very helpful}. The {location is easy to access|institute is near city center|class timings are flexible}, and the {staff is always supportive|teachers are very polite|environment is friendly}. {Highly recommend this institute.|The best in Raipur for spoken English.|A must-join class!}",
+
+    "{Learning English|Overcoming communication fear|Improving my personality} was {never this easy|so much fun|completely stress-free} thanks to Jha Institute in Raipur. Their {spoken English classes|PD sessions|group activities} are {designed for real improvement|focused on building confidence|perfect for shy speakers}. {Teachers support you at every step.|Meditation really helps reduce anxiety.|Now I speak without hesitation.}",
+
+    "The {spoken English and PD combo|voice training and public speaking|communication program} at Jha Institute Raipur is {outstanding|super effective|very professional}. I joined to improve my {stage presence|confidence|fluency} and ended up with a complete {personality upgrade|communication makeover|confidence boost}. {Best institute for working professionals.|Great results within weeks.|Supportive teachers make a difference.}",
+
+    "{Before joining Jha Institute|Earlier|Previously}, I was {nervous speaking in public|struggling with fluency|shy and underconfident}, but now I {speak confidently|handle interviews better|express myself clearly}. Their {faculty is experienced|staff is highly supportive|approach is very motivational}. {Best English classes in Raipur.|Effective for all age groups.|Loved the entire journey!}",
+
+    "Jha Institute is not just a {spoken English center|PD coaching|training hub}, it's a place where {confidence grows|transformation begins|stage fear ends}. Their {meditation with speaking practice|real conversation focus|practical method} is {truly unique|unlike anything else|very impactful}. {Ideal for students in Raipur.|Classes near Pachpedi Naka.|Convenient timing and location.}",
+
+    "{I highly recommend|You must join|Don't miss out on} Jha Institute Raipur for {spoken English and personality development|confidence building and PD|communication improvement}. Their {stage fear removal techniques|voice modulation activities|group discussions} are {fun, engaging, and helpful|perfect for nervous speakers|great for confidence}. {Best learning experience in Raipur.|Worth every minute.|Real improvement guaranteed.}",
+
+    "The {staff at Jha Institute|teachers here|trainers at the center} are {always encouraging|highly skilled and helpful|polite and understanding}. Whether you’re a {student|job seeker|professional}, their {programs suit everyone|classes adapt to your needs|content is easy to follow}. {Perfect for spoken English and PD in Raipur.|Best faculty I’ve met.|Very professional yet friendly.}",
+
+    "{Weekend batches|Flexible class timings|Morning and evening sessions} make Jha Institute ideal for {working professionals|college students|busy learners}. Their {location in Raipur|institute near Pachpedi Naka|accessibility} is {very convenient|a major advantage|super helpful}. {No excuses to miss a class!|Learning fits your schedule.|Really appreciate the flexibility.}",
+
+    "{From nervous to natural|From shy to strong speaker|From fear to fluency}, that’s my journey at Jha Institute. Their {stage fear management|confidence-building sessions|meditation-based teaching} is {simple yet powerful|gentle and effective|exactly what I needed}. {Classes are structured yet stress-free.|Great place to find your voice.|English learning with a difference.}",
+
+    "At Jha Institute Raipur, they {don’t focus on grammar rules|prioritize real communication|encourage daily speaking}. Their {environment is encouraging|staff is super friendly|methods are research-based}. {Spoken English and PD both covered!|The best choice in Raipur.|Results that speak for themselves.}",
+
+    "{Overcoming hesitation|Building communication skills|Learning real English} was possible only at Jha Institute. Their {focus on voice modulation|interactive methods|student-centered teaching} is {truly effective|very refreshing|perfect for modern learners}. {I recommend this to everyone in Raipur.|Ideal for all who fear speaking.|Confidence guaranteed!}",
+
+    "Jha Institute helped me {crack my interview|speak in seminars|present with confidence}. Their {mock interviews|group talks|PD exercises} are {based on real situations|excellent for practice|boost your skills quickly}. {Top-notch training center.|Loved the practical approach.|Worth every penny.}",
+
+    "This institute in Raipur is the {go-to place for spoken English|top choice for personality development|best for stage fear removal}. Their {location is perfect|classroom vibe is positive|instructors are amazing}. {Learn, practice, grow – all in one place.|You’ll love your progress here.|Friendly vibes, serious learning.}",
+
+    "I used to {avoid speaking in English|feel anxious during conversations|struggle in group discussions}, but now I {lead conversations|feel confident|love participating}. Jha Institute’s {friendly staff|motivating classes|smart teaching} made all the difference. {Thanks to the best PD and English coaching in Raipur!|Great experience overall.|So grateful I found this place.}",
+
+    "{Whether you're a student or professional|No matter your age or level|Even if you fear speaking}, Jha Institute Raipur {has the right course for you|guides you step by step|helps you open up}. Their {focus on self-development|tools for confidence|balance of theory and practice} is {exceptional|unparalleled|truly helpful}. {Definitely the best spoken English & PD institute in Raipur.|Join without a second thought.|You’ll thank yourself later.}",
+
+    "{Real change|Visible improvement|Lasting impact} – that’s what Jha Institute delivers. Their {PD + English training|stage fear removal techniques|supportive team} creates a {powerful learning experience|safe space to grow|complete communication package}. {No better place in Raipur.|Ideal for all learners.|Best value for money!}"
+
+
+[
+    "If you're searching for a {spoken English class in Pachpedi Naka, Raipur|reliable English coaching near Pachpedi Naka|top-rated English speaking institute in Raipur}, Jha Institute is the {best choice|ideal place|perfect solution}. Their {unique teaching style|meditation-based learning approach|focus on practical English speaking} is {unlike anything else|incredibly effective|both relaxing and result-driven}. I {used to struggle with stage fear|was very hesitant to speak in public|could barely say a few sentences in English}, but after just a few weeks, my {confidence has grown immensely|speaking skills have improved significantly|fluency has increased noticeably}. The {supportive staff|friendly mentors|experienced trainers} are always there to guide you, making this the {most comfortable environment for beginners|best spoken English class in Raipur|go-to place for communication skills}. {Highly recommend Jha Institute to anyone looking to improve English practically and confidently.|Perfect for students, job seekers, and professionals alike.|You’ll see clear improvement within weeks!}",
+
+    "Jha Institute, located in {Pachpedi Naka, Raipur|the heart of Raipur|a very convenient area}, is the {top-rated spoken English class|most trusted English coaching center|best place to improve communication skills}. What makes it {stand out|different from others|truly unique} is their {blend of meditation and English training|stress-free learning method|focus on boosting real-world speaking ability}. Their {spoken English program|daily practice sessions|voice modulation exercises} are designed to {build confidence from within|eliminate stage fear|help you express freely}. I had tried several institutes before this, but none helped me the way Jha Institute has. From day one, the {trainers were encouraging|staff was helpful|environment was friendly}, and now I can confidently say I’m no longer afraid of speaking in public. {For the best spoken English class in Raipur, especially near Pachpedi Naka, Jha Institute is unmatched.|Their training works, and it lasts.|One of the best learning experiences I've ever had.}",
+
+    "Attending a {spoken English class in Raipur|communication skills course near Pachpedi Naka|public speaking institute in Raipur} was on my to-do list for a long time — and I’m so glad I chose Jha Institute. This institute is located in {Pachpedi Naka, a prime and easy-to-reach area of Raipur|a very accessible part of Raipur|one of the best-connected localities}. The classes here are not like typical grammar-heavy sessions. They focus on {real conversation|confidence building|practical communication}. What really helped me was their {meditation-based approach|calm and structured environment|focus on voice modulation and body language}, which helped me {shed my hesitation|gain clarity and fluency|speak English naturally}. The {staff is super supportive|faculty is friendly and encouraging|mentors care about your progress}, which makes a huge difference. {If you're serious about improving spoken English in Raipur, this is the institute to join.|Results are visible within a few sessions.|Best decision I’ve made for personal development.}",
+
+    "I highly recommend Jha Institute to anyone looking for a {spoken English class near Pachpedi Naka, Raipur|trusted English speaking course in Raipur|place to overcome stage fear and speak fluently}. Their unique combination of {meditation and practical speaking|confidence-boosting exercises|real-life conversation training} has helped me {develop strong communication skills|start speaking fluently in English|feel more confident in interviews and meetings}. One thing that stood out to me is how {supportive the staff is|comforting the environment is|motivating the teachers are}. Located conveniently at Pachpedi Naka, Jha Institute makes it easy for students and working professionals to attend classes regularly. Unlike traditional spoken English classes, their method is interactive and focused on actual speaking rather than just grammar. {You won’t just learn English here — you’ll speak it naturally.|This is more than just a class, it's a transformation.|Highly effective and thoughtfully designed course.}",
+
+    "As someone who {struggled with English for years|avoided speaking in public|felt embarrassed during job interviews}, finding Jha Institute in {Pachpedi Naka, Raipur|Raipur's prime location|a quiet and accessible area} was life-changing. Their {spoken English class|training program|personality development sessions} are built to help real people with real challenges. With regular speaking activities, meditation sessions, and personalized feedback, I have gone from {being nervous and quiet|stumbling through conversations|avoiding public speaking} to {leading discussions|interacting with ease|speaking confidently}. The location is perfect, especially for people coming from different areas of Raipur. Their {flexible timings|friendly staff|easy-to-understand techniques} make it accessible for students and professionals alike. {This is the spoken English class I always needed.|Absolutely the best coaching center in Raipur.|No better place to start your English journey.}",
+
+    "Jha Institute at Pachpedi Naka, Raipur is the {ideal destination|perfect place|number one choice} for anyone looking to {speak fluent English|overcome hesitation|build communication confidence}. The {teaching methodology|training format|class structure} here is different from any other spoken English class in the city. Rather than relying on textbooks, they focus on {real conversations|voice and personality development|stage presence}. Their use of {guided meditation before speaking|relaxation exercises|mental preparation techniques} makes a noticeable difference. As someone who faced {stage fear and low confidence|trouble speaking in groups|anxiety while presenting}, I can confidently say Jha Institute helped me {grow personally and professionally|unlock my potential|become a better communicator}. {Best decision ever.|If you're from Raipur, this is the place to join.|10/10 for spoken English training.}",
+
+    "If you're in Raipur and searching for a {spoken English class near me|communication skills training|confidence-building course}, look no further than Jha Institute at Pachpedi Naka. This place is known for its {unique approach to language learning|excellent reputation among students|life-changing methods}. I joined as a beginner with {very low confidence|zero fluency|a strong fear of public speaking}, but through their consistent support, daily practice, and calming meditation sessions, I now {participate in meetings|speak with confidence in interviews|handle public speaking smoothly}. The trainers are {patient and experienced|supportive and motivating|friendly and always available}. Location-wise, it's very convenient with good connectivity. {For spoken English and personality development in Raipur, nothing beats this institute.|Highly effective and student-friendly.|The best spoken English class I’ve attended.}",
+
+    "I enrolled in Jha Institute’s {spoken English and personality development program|public speaking and English course|voice modulation training} at their Pachpedi Naka center in Raipur and have experienced {tremendous improvement|real transformation|lasting confidence}. The sessions are a mix of {practical speaking|group discussion|guided meditation}, which not only improve fluency but also reduce anxiety. Unlike other classes where you just memorize grammar rules, here you get to {practice in real time|speak freely|receive helpful feedback}. Their location is convenient, and the overall environment is very welcoming. {This is the kind of spoken English class that truly works.|Great for introverts and professionals alike.|Perfect mix of skill and support.}",
+
+    "Jha Institute in Pachpedi Naka, Raipur offers the most {innovative|result-driven|learner-friendly} spoken English class I’ve ever seen. Their meditation-based teaching approach helps {calm the mind|remove fear|build inner confidence}, which is crucial for learning to speak in front of others. I have seen remarkable changes in my ability to {converse in English|participate in group discussions|present ideas clearly}. The institute's staff is {very helpful|always available for guidance|invested in every student’s success}, and the learning environment is {peaceful|motivating|interactive}. Location-wise, it’s easily accessible, which made it even easier to stay consistent. {Highly recommend for anyone serious about communication skills.|Excellent for students and job seekers.|You’ll feel the progress in every session.}",
+
+    "When I searched for a {spoken English class in Raipur near me|confidence-building English class in Raipur|communication training with results}, I found Jha Institute at Pachpedi Naka, and it turned out to be a blessing. The program focuses on {stage fear removal|voice training|natural fluency}, and their teaching methods are backed by mindfulness and daily practice. I saw real improvement not just in my English but also in how I {present myself|speak in interviews|communicate with strangers}. Their flexible schedule and easily reachable location make it a practical option for anyone in Raipur. {This is more than an English class—it’s a journey of confidence.|The most impactful spoken English course I've taken.|If you live in Raipur, you must check this out.}",
+
+    "Jha Institute’s spoken English classes at Pachpedi Naka, Raipur offer the {perfect environment|ideal setting|most supportive platform} for learning. They focus not only on spoken English but also on {developing soft skills|overcoming stage fear|enhancing self-expression}. The trainers ensure that each student gets personal attention, and their feedback is always constructive. With meditation, mock sessions, and real conversations, learning feels {natural and stress-free|engaging and effective|relaxed yet focused}. I now feel confident speaking in English in public settings and have even started leading group discussions. {One of the best institutes in Raipur for spoken English.|I recommend this to every English learner in the city.|A must-try for personality development and speaking skills.}",
+
+    "Located in the heart of Pachpedi Naka, Raipur, Jha Institute is known for its {high-quality spoken English training|real communication-building classes|life-changing confidence programs}. Their use of {guided meditation before speaking sessions|daily practice in a calm setup|voice improvement techniques} makes a big difference. I was always anxious about making mistakes while speaking, but now I speak with ease and clarity. The staff is {very encouraging|patient and caring|always ready to help}, and the whole setup feels {safe, comfortable, and productive}. {Best place for English speaking and confidence in Raipur.|Perfect for students preparing for interviews.|Great transformation through practical methods.}"
+]
+
+
+
+        ];
+
+        const reviewIcons = [
+            'fas fa-thumbs-up',
+            'fas fa-star',
+            'fas fa-heart',
+            'fas fa-rocket',
+            'fas fa-trophy',
+            'fas fa-gem',
+            'fas fa-fire',
+            'fas fa-crown'
+        ];
+
+        function generateReview(spintax) {
+            let text = spintax;
+            const regex = /\{([^{}]+)\}/g;
+            
+            while (text.match(regex)) {
+                text = text.replace(regex, (match, options) => {
+                    const choices = options.split('|');
+                    return choices[Math.floor(Math.random() * choices.length)];
+                });
+            }
+            return text;
+        }
+
+        function getRandomIcon() {
+            return reviewIcons[Math.floor(Math.random() * reviewIcons.length)];
+        }
+
+        function displayUniqueReviews() {
+            const container = document.getElementById('review-container');
+            container.innerHTML = '';
+
+            for (let i = 0; i < numberOfReviewsToShow; i++) {
+                const randomTemplate = spintaxTemplates[Math.floor(Math.random() * spintaxTemplates.length)];
+                const uniqueReviewText = generateReview(randomTemplate);
+                const randomIcon = getRandomIcon();
+                
+                const templateDiv = document.createElement('div');
+                templateDiv.className = 'review-template';
+                
+                templateDiv.innerHTML = `
+                    <div class="review-content">
+                        <i class="${randomIcon} review-icon"></i>
+                        <p class="review-text">${uniqueReviewText}</p>
+                        <button class="copy-btn"><i class="fas fa-copy"></i> Copy & Go</button>
+                    </div>
+                    <div class="copy-message">
+                        <i class="fas fa-check-circle"></i> Copied! Redirecting to Google Reviews...
+                    </div>
+                `;
+
+                templateDiv.addEventListener('click', function() {
+                    const copyMessage = this.querySelector('.copy-message');
+                    const copyBtn = this.querySelector('.copy-btn');
+                    
+                    // Update button to show loading
+                    copyBtn.innerHTML = '<div class="loading"></div> Copying...';
+                    copyMessage.classList.add('show');
+                    
+                    // Copy to clipboard
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(uniqueReviewText).then(() => {
+                            setTimeout(() => {
+                                window.open(googleReviewUrl, '_blank');
+                            }, 1800);
+                        }).catch(err => {
+                            console.error('Clipboard API failed, using fallback:', err);
+                            fallbackCopyText(uniqueReviewText);
+                            setTimeout(() => {
+                                window.open(googleReviewUrl, '_blank');
+                            }, 1800);
+                        });
+                    } else {
+                        // Fallback for older browsers
+                        fallbackCopyText(uniqueReviewText);
+                        setTimeout(() => {
+                            window.open(googleReviewUrl, '_blank');
+                        }, 1800);
+                    }
+                });
+                
+                container.appendChild(templateDiv);
+            }
+        }
+
+        // Fallback copy function for older browsers
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Custom review button functionality
+        document.getElementById('custom-review-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.innerHTML = '<div class="loading"></div> Opening Google Reviews...';
+            setTimeout(() => {
+                window.open(googleReviewUrl, '_blank');
+                this.innerHTML = '<i class="fas fa-pen-fancy"></i> Write Custom Review';
+            }, 1000);
+        });
+
+        // Initialize the page
+        window.addEventListener('load', function() {
+            displayUniqueReviews();
+            
+            // Add smooth scroll animation for mobile
+            if (window.innerWidth <= 768) {
+                document.querySelector('.container').style.animation = 'slideUp 1s ease-out';
+            }
+        });
+
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate logos on load
+            const logos = document.querySelectorAll('.business-logo, .personal-logo');
+            logos.forEach((logo, index) => {
+                setTimeout(() => {
+                    logo.style.animation = 'slideUp 0.6s ease-out';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
